@@ -1,0 +1,254 @@
+/* app/globals.css */
+
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap');
+
+/* Base theme */
+:root {
+  color-scheme: dark;
+
+  /* สีแบรนด์ fallback (ถ้าใน tailwind.config มีสี neo-* อยู่แล้วก็ใช้ร่วมกันได้) */
+  --neo-violet: #8b5cf6;   /* bg-neo-violet */
+  --neo-purple: #6c5ce7;   /* hover violet */
+  --neo-pink:   #ec4899;   /* bg-neo-pink */
+  --glow:       265 90% 60%; /* สำหรับเงาเรือง */
+}
+
+html, body {
+  background: #0B0B0C;
+  color: #fff;
+  font-family: "Prompt", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans Thai", "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+* { box-sizing: border-box; }
+
+/* Tailwind layers */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------- Base custom styles ---------------- */
+.gradient-text {
+  background: linear-gradient(90deg, #A855F7, #6C5CE7, #E879F9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* เบื้องหลังคอสเมติกเคลื่อนไหว (GPU-friendly) */
+.cosmic { position: fixed; inset: -20% -20% auto -20%; z-index: -1; pointer-events: none; }
+.cosmic .orb {
+  position: absolute; width: 48rem; height: 48rem; border-radius: 9999px;
+  filter: blur(60px); opacity: .24; animation: float 12s ease-in-out infinite;
+}
+.cosmic .o1 { background: #6C5CE7; top: -10%; left: -10%; }
+.cosmic .o2 { background: #A855F7; top: 30%; right: -10%; animation-delay: -6s; }
+.cosmic .o3 { background: #E879F9; bottom: -15%; left: 10%; animation-delay: -3s; }
+
+@keyframes float {
+  0%,100% { transform: translateY(0) translateX(0) scale(1); }
+  50%    { transform: translateY(-20px) translateX(10px) scale(1.03); }
+}
+
+/* ---------------- Tailwind layers ---------------- */
+@layer components {
+  .container-xl { @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8; }
+  .card { @apply bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-md; }
+
+  /* ปุ่มพื้นแบรนด์ */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 rounded-xl px-5 py-3 font-medium transition shadow-glow;
+    background: linear-gradient(135deg, var(--neo-violet), var(--neo-pink));
+  }
+
+  /* ปุ่มโปร่ง */
+  .btn-ghost { @apply inline-flex items-center gap-2 rounded-xl bg-white/10 px-5 py-3 font-medium hover:bg-white/20 transition; }
+}
+
+@layer utilities {
+  .link { @apply underline underline-offset-4 hover:text-neo-pink; text-decoration-color: var(--neo-violet); }
+  .glass { background: color-mix(in srgb, #ffffff 6%, transparent); backdrop-filter: saturate(120%) blur(10px); }
+  .shadow-glow { box-shadow: 0 0 32px hsl(var(--glow) / .25); }
+  /* เฉดสีช่วย (กรณีไม่มีใน tailwind.config) */
+  .from-neo-violet { --tw-gradient-from: var(--neo-violet); --tw-gradient-to: rgb(139 92 246 / 0); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }
+  .to-neo-pink { --tw-gradient-to: var(--neo-pink); }
+  .bg-neo-violet { background-color: var(--neo-violet); }
+  .bg-neo-pink { background-color: var(--neo-pink); }
+  .text-neo-violet { color: var(--neo-violet); }
+  .ring-neo-violet\/25 { --tw-ring-color: color-mix(in srgb, var(--neo-violet) 25%, transparent); }
+  .bg-neo-violet\/15 { background-color: color-mix(in srgb, var(--neo-violet) 15%, transparent); }
+}
+/* ========== Clients/Partners marquee ========== */
+.neo-marquee {
+  position: relative;
+  overflow: hidden;
+  mask-image: linear-gradient(to bottom, transparent, black 12%, black 88%, transparent);
+}
+.neo-marquee__inner {
+  display: grid;
+  grid-auto-rows: minmax(4rem, auto);
+  gap: 2rem;
+  animation: neo-marquee-up linear infinite;
+  will-change: transform;
+}
+.neo-marquee--down .neo-marquee__inner { animation-name: neo-marquee-down; }
+
+/* pause เมื่อ hover ทั้งคอลัมน์ */
+.neo-marquee:hover .neo-marquee__inner { animation-play-state: paused; }
+
+/* ลดแอนิเมชันเมื่อผู้ใช้ตั้งค่า reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .neo-marquee__inner { animation: none !important; }
+}
+
+/* keyframes เลื่อนขึ้น/ลง */
+@keyframes neo-marquee-up {
+  from { transform: translateY(0%); }
+  to   { transform: translateY(-50%); } /* 50% เพราะเรา duplicate items */
+}
+@keyframes neo-marquee-down {
+  from { transform: translateY(-50%); }
+  to   { transform: translateY(0%); }
+}
+/* Hide scrollbar cross browser */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none;    /* Firefox */
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;            /* Chrome/Safari */
+}
+/* ===== Portfolio Marquee ===== */
+@keyframes ns-marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); } /* วิ่งครึ่งหนึ่ง เพราะเรา duplicate content 2 ชุด */
+}
+
+.marquee-track {
+  /* ทำให้ความกว้างมากพอและอนิเมชันลื่น */
+  will-change: transform;
+  animation-name: ns-marquee;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.marquee-paused {
+  animation-play-state: paused;
+}
+/* พื้นหลังนีออนของบล็อค */
+.bg-neo-radial{
+  background:
+    radial-gradient(60% 120% at 0% 0%, rgba(139,92,246,.10), transparent 55%),
+    radial-gradient(60% 120% at 100% 0%, rgba(236,72,153,.10), transparent 55%),
+    #121016;
+}
+
+/* เงาเรือง */
+.shadow-glow{ box-shadow: 0 18px 60px rgba(0,0,0,.45), 0 0 40px rgba(139,92,246,.15); }
+
+/* ข้อความไล่เฉดแบรนด์ */
+.text-gradient-brand{
+  background: linear-gradient(135deg,#a855f7 0%, #8b5cf6 35%, #d946ef 70%, #ec4899 100%);
+  -webkit-background-clip:text; background-clip:text; color: transparent;
+}
+
+/* การ์ดไล่เฉดกรอบนุ่ม ๆ */
+.card-gradient{
+  position: relative;
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  border: 1px solid rgba(255,255,255,.10);
+}
+.card-gradient .inner{ position:relative; z-index:1; }
+
+/* มาส์ก fade บน/ล่างให้ภาพดูฟุ้ง */
+.mask-fade-y{
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 86%, transparent);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 14%, #000 86%, transparent);
+}
+
+/* ปุ่มใหญ่ */
+.btn-lg{ padding:.85rem 1.15rem; border-radius:1.1rem; }
+.aurora {
+  position: relative; isolation: isolate; overflow: hidden;
+}
+.aurora::before, .aurora::after{
+  content:""; position:absolute; inset:-20%;
+  background:
+    radial-gradient(36rem 18rem at 20% 10%, rgba(168,85,247,.14), transparent 60%),
+    radial-gradient(30rem 16rem at 80% 0%, rgba(236,72,153,.12), transparent 60%),
+    radial-gradient(42rem 24rem at 50% 100%, rgba(79,70,229,.12), transparent 60%);
+  filter: blur(10px); z-index:-1;
+  animation: aurora 18s linear infinite alternate;
+}
+@keyframes aurora { to { transform: translateY(-3%) translateX(2%) scale(1.02); } }
+
+/* ทรานซิชันมาตรฐาน */
+* { transition: background-color .25s, color .25s, border-color .25s, box-shadow .25s; }
+/* เคารพการลด motion */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+.link-underline {
+  background: linear-gradient(currentColor,currentColor) left bottom / 0 2px no-repeat;
+  transition: background-size .3s cubic-bezier(.22,1,.36,1);
+}
+.link-underline:hover { background-size: 100% 2px; }
+.btn-float:hover { transform: translateY(-2px); box-shadow: 0 14px 32px rgba(0,0,0,.35); }
+.shine {
+  background: linear-gradient(90deg,#fff 0%,#fff 20%,#999 40%,#fff 60%,#fff 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation: shine 2.8s linear infinite;
+  background-size: 200% auto;
+}
+@keyframes shine { to{ background-position: -200% center; } }
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.05); }
+}
+.animate-pulse-slow {
+  animation: pulse-slow 12s ease-in-out infinite;
+}
+@keyframes neoFloat {
+  0%   { transform: translate3d(0,0,0) scale(1); opacity: .9; }
+  50%  { transform: translate3d(-2%, -1%, 0) scale(1.03); opacity: 1; }
+  100% { transform: translate3d(0,0,0) scale(1); opacity: .9; }
+}
+@keyframes neoFloatReverse {
+  0%   { transform: translate3d(0,0,0) scale(1); opacity: .75; }
+  50%  { transform: translate3d(2%, 1%, 0) scale(1.04); opacity: .95; }
+  100% { transform: translate3d(0,0,0) scale(1); opacity: .75; }
+}
+/* ---------- Coverflow container controls ---------- */
+.neo-coverflow {
+  position: relative;
+  /* ซ่อนส่วนที่ล้นออกนอกคอนเทนเนอร์ */
+  overflow: hidden;
+  /* เฟดขอบซ้าย-ขวาให้ดูลื่นตา (รองรับ mask) */
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent);
+}
+
+/* Swiper เองก็ไม่ให้ล้น (ก่อนหน้านี้เปิดไว้เพื่อโชว์เงา) */
+.neo-coverflow .swiper {
+  overflow: hidden;
+}
+
+/* ปรับตำแหน่งปุ่มให้อยู่ในระยะ padding ของ container */
+.neo-coverflow .swiper-button-prev,
+.neo-coverflow .swiper-button-next {
+  left: 0; right: 0;
+}
+
+.neo-coverflow .swiper-button-prev { transform: translateX(-16px); }
+.neo-coverflow .swiper-button-next { transform: translateX(16px); }
+
+@media (min-width: 640px) { /* sm:px-6 = 24px */
+  .neo-coverflow .swiper-button-prev { transform: translateX(-24px); }
+  .neo-coverflow .swiper-button-next { transform: translateX(24px); }
+}
+@media (min-width: 1024px) { /* lg:px-8 = 32px */
+  .neo-coverflow .swiper-button-prev { transform: translateX(-32px); }
+  .neo-coverflow .swiper-button-next { transform: translateX(32px); }
+}
+
+
