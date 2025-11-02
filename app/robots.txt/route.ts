@@ -1,16 +1,16 @@
 // app/robots.txt/route.ts
 import { NextResponse } from "next/server";
-import { SITE } from "@/lib/seo";
+import { SITE } from "../lib/seo"; // ใช้ SITE.url แทน domain
 
 export function GET() {
   const body = `
 User-agent: *
 Allow: /
 
-Sitemap: ${SITE.domain}/sitemap.xml
-  `.trim();
+Sitemap: ${SITE.url}/sitemap.xml
+`.trim();
 
   return new NextResponse(body, {
-    headers: { "Content-Type": "text/plain; charset=utf-8" },
+    headers: { "content-type": "text/plain; charset=utf-8" },
   });
 }

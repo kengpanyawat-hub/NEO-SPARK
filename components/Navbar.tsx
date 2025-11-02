@@ -5,9 +5,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, Sparkles } from "lucide-react";
 
-type NavItem = { href: string; label: string; isActive: (path: string) => boolean };
+type NavItem = { href: string; label: string; isActive: (path: string) => boolean; badge?: string };
 
 const NAV: NavItem[] = [
   { href: "/", label: "Home", isActive: (p) => p === "/" },
@@ -17,6 +17,13 @@ const NAV: NavItem[] = [
   { href: "/courses", label: "Courses", isActive: (p) => p.startsWith("/courses") },
   { href: "/blog", label: "Blog", isActive: (p) => p.startsWith("/blog") },
   { href: "/contact", label: "Contact", isActive: (p) => p.startsWith("/contact") },
+    // 👇 เพิ่มเมนู “รวมเครื่องมือ AI”
+  {
+    href: "/ai-tools",
+    label: "รวมเครื่องมือ AI",
+    isActive: (p) => p.startsWith("/ai-tools"),
+    badge: "ฟรี",
+  },
 ];
 
 function cn(...xs: Array<string | false | undefined>) {
@@ -52,10 +59,9 @@ export function Navbar() {
   return (
     <header className="fixed inset-x-0 top-4 z-50">
       <div className="container-xl">
-        {/* แคปซูลนำทาง (เหมือนตัวอย่าง) */}
         <div className="rounded-[2.25rem] border border-white/10 bg-[#1f1c25]/80 backdrop-blur-md shadow-glow supports-[backdrop-filter]:bg-[#1f1c25]/70">
           <div className="flex h-[64px] items-center gap-3 px-4 sm:px-6">
-            {/* Brand — ซ้าย */}
+            {/* Brand */}
             <Link href="/" className="flex shrink-0 items-center gap-2">
               <Image src="/logo.svg" alt="NEO SPARK" width={28} height={28} className="rounded-xl shadow-glow" />
               <span className="font-semibold tracking-wide">
@@ -63,21 +69,38 @@ export function Navbar() {
               </span>
             </Link>
 
-            {/* Desktop nav — จัดให้อยู่ “กึ่งกลาง” จริง ๆ */}
+            {/* Desktop nav */}
             <nav className="ml-4 hidden md:flex flex-1 items-center justify-center gap-1">
               {NAV.map((n) => {
                 const active = n.isActive(pathname);
+                const isAi = n.href === "/ai-tools";
                 return (
                   <Link
                     key={n.href}
                     href={n.href}
                     className={cn(
-                      "px-3 py-2 rounded-xl text-sm transition",
+                      "group relative px-3 py-2 rounded-xl text-sm transition",
                       "hover:bg-white/5 hover:text-white",
                       active ? "bg-white/10 text-white" : "text-white/80"
                     )}
                   >
-                    {n.label}
+                    <span className="inline-flex items-center gap-1">
+                      {isAi && <Sparkles size={16} className="opacity-90" />}
+                      {n.label}
+                      {/* Badge “ฟรี” */}
+                      {n.badge && (
+                        <span className="ml-1 rounded-full bg-rose-500 px-1.5 py-[2px] text-[10px] font-semibold text-white shadow-sm">
+                          {n.badge}
+                        </span>
+                      )}
+                    </span>
+                    {/* underline hover */}
+                    <span
+                      className={cn(
+                        "pointer-events-none absolute -bottom-1 left-3 right-3 h-px bg-white/25 transition opacity-0",
+                        "group-hover:opacity-100"
+                      )}
+                    />
                   </Link>
                 );
               })}
@@ -111,11 +134,9 @@ export function Navbar() {
                 className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/90 ring-1 ring-white/10 transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-neo-violet/60"
               >
                 <span className="sr-only">เมนู</span>
-                {/* burger */}
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className={cn("transition", open && "opacity-0")}>
                   <path d="M4 6h16M4 12h16M8 18h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                 </svg>
-                {/* close */}
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className={cn("absolute transition", !open && "opacity-0")}>
                   <path d="M6 6l12 12M18 6l-12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                 </svg>
@@ -147,7 +168,15 @@ export function Navbar() {
                         active ? "text-white" : "text-white/80"
                       )}
                     >
-                      {n.label}
+                      <span className="inline-flex items-center gap-2">
+                        {n.href === "/ai-tools" && <Sparkles size={18} className="opacity-90" />}
+                        {n.label}
+                        {n.badge && (
+                          <span className="ml-1 rounded-full bg-rose-500 px-1.5 py-[2px] text-[10px] font-semibold text-white">
+                            {n.badge}
+                          </span>
+                        )}
+                      </span>
                     </Link>
                   );
                 })}

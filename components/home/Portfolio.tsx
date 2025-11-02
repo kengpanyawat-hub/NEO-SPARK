@@ -8,28 +8,28 @@ import Reveal from "@/components/motion/Reveal";
 type Work = { title: string; cover: string; href?: string };
 
 const WORKS: Work[] = [
-  { title: "Longtrade Academy",           cover: "/portfolio/web/longtrade.png", href: "https://longtradeacademy.com" },
-  { title: "Code.Keng",   cover: "/portfolio/web/code.keng.png", href: "/portfolio/web/code.keng" },
-  { title: "Lawyer-TH",  cover: "/portfolio/web/lawyer.png",  href: "https://www.lawyer-th.com/" },
-  { title: "Hippo-Air",           cover: "/portfolio/web/hippo-air.png", href: "https://hippo-air.com/" },
-  { title: "Alisa-Ints",   cover: "/portfolio/web/Alisa-Ints.png", href: "https://alisa-ints.com/" },
-  { title: "tanhombrand",  cover: "/portfolio/web/tanhombrand.png",  href: "https://tanhombrand.com/" },
-  { title: "Finorganizer",           cover: "/portfolio/web/Finorganizer.png", href: "https://www.finorganizer.com/home" },
-  { title: "lambda-scientific",   cover: "/portfolio/web/lambda-scientific.png", href: "https://www.lambda-scientific.co.th/" },
-  { title: "candsassist",  cover: "/portfolio/web/candsassist.png",  href: "https://candsassist.com/" },
-  { title: "plantnery",  cover: "/portfolio/web/plantnery.png",  href: "https://plantnery.com/" },
-  { title: "Heath Planner",  cover: "/portfolio/web/HeathPlanner.png",  href: "https://www.heathplanner.com/" },
+  { title: "Longtrade Academy", cover: "/portfolio/web/longtrade.png", href: "https://longtradeacademy.com" },
+  { title: "Code.Keng", cover: "/portfolio/web/code.keng.png", href: "/portfolio/web/code.keng" },
+  { title: "Lawyer-TH", cover: "/portfolio/web/lawyer.png",  href: "https://www.lawyer-th.com/" },
+  { title: "Hippo-Air", cover: "/portfolio/web/hippo-air.png", href: "https://hippo-air.com/" },
+  { title: "Alisa-Ints", cover: "/portfolio/web/Alisa-Ints.png", href: "https://alisa-ints.com/" },
+  { title: "tanhombrand", cover: "/portfolio/web/tanhombrand.png",  href: "https://tanhombrand.com/" },
+  { title: "Finorganizer", cover: "/portfolio/web/Finorganizer.png", href: "https://www.finorganizer.com/home" },
+  { title: "lambda-scientific", cover: "/portfolio/web/lambda-scientific.png", href: "https://www.lambda-scientific.co.th/" },
+  { title: "candsassist", cover: "/portfolio/web/candsassist.png",  href: "https://candsassist.com/" },
+  { title: "plantnery", cover: "/portfolio/web/plantnery.png",  href: "https://plantnery.com/" },
+  { title: "Heath Planner", cover: "/portfolio/web/HeathPlanner.png",  href: "https://www.heathplanner.com/" },
   // เพิ่มได้เรื่อย ๆ …
 ];
 
 export default function Portfolio() {
   // ความเร็วมาตรฐาน: ต่อการ์ด ~6s ถ้ามี 6 งาน = 36s ต่อรอบ
-  const duration = useMemo(() => `${Math.max(1, WORKS.length) * 5}s`, []);
+  const duration = useMemo(() => `${Math.max(1, WORKS.length) * 1}s`, []);
   const [paused, setPaused] = useState(false);
 
   return (
   <Reveal>
-    <section className="aurora rounded-3xl border border-white/10 p-8 container-xl py-14">
+    <section className="p-8 container-xl py-14">
       {/* Heading */}
       <div className="text-center mb-6">
         <span className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm bg-white/5 ring-1 ring-white/10">

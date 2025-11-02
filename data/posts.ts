@@ -54,7 +54,7 @@ const rawPosts: Omit<Post, "category">[] = [
       "AI & Content",
       "Social"
     ],
-    "cover": "/blog/ai-content-3x/cover.jpg",
+    "cover": "/blog/covers/post01.jpg",
     "excerpt": "ย่นเวลาคิดไอเดียคอนเทนต์จากชั่วโมงเหลือนาที ด้วย Prompt Template และ Sprint",
     "author": "NEO SPARK AGENCY",
     "takeaway": [
@@ -105,7 +105,7 @@ const rawPosts: Omit<Post, "category">[] = [
       "Design",
       "Canva"
     ],
-    "cover": "/blog/canva-hacks/cover.jpg",
+    "cover": "/blog/covers/post01.jpg",
     "excerpt": "รวมทริคจัดเลย์เอาต์ ฟอนต์ คู่สี และกริด ที่ใช้แล้วภาพดูแพงขึ้นทันที",
     "author": "NEO SPARK AGENCY",
     "takeaway": [
@@ -157,7 +157,7 @@ const rawPosts: Omit<Post, "category">[] = [
       "Next.js",
       "SEO"
     ],
-    "cover": "/blog/nextjs-checklist/cover.jpg",
+    "cover": "/blog/covers/post01.jpg",
     "excerpt": "เช็กลิสต์ทำเว็บด้วย Next.js ให้เร็ว สวย ใช้งานง่าย และได้คะแนน SEO ดี",
     "author": "NEO SPARK AGENCY",
     "takeaway": [
@@ -209,7 +209,7 @@ const rawPosts: Omit<Post, "category">[] = [
       "CAPI",
       "GA4"
     ],
-    "cover": "/blog/ga4-capi/cover.jpg",
+    "cover": "/blog/covers/post01.jpg",
     "excerpt": "วัดผลอย่างแม่นยำตั้งแต่ Landing → Form → Thank You",
     "author": "NEO SPARK AGENCY",
     "takeaway": [
@@ -260,7 +260,7 @@ const rawPosts: Omit<Post, "category">[] = [
       "Ads",
       "Google Ads"
     ],
-    "cover": "/blog/google-ads/cover.jpg",
+    "cover": "/blog/covers/post01.jpg",
     "excerpt": "เริ่มจาก Search เพื่อเข้าใจ Intent แล้วค่อยสเกลด้วย PMax",
     "author": "NEO SPARK AGENCY",
     "takeaway": [
@@ -311,7 +311,7 @@ const rawPosts: Omit<Post, "category">[] = [
       "Ads",
       "Meta"
     ],
-    "cover": "/blog/meta-ads/cover.jpg",
+    "cover": "/blog/covers/post01.jpg",
     "excerpt": "ครีเอทีฟให้หยุดสายตาและเกิดการแปลง",
     "author": "NEO SPARK AGENCY",
     "takeaway": [
@@ -362,7 +362,7 @@ const rawPosts: Omit<Post, "category">[] = [
       "Branding",
       "Design"
     ],
-    "cover": "/blog/branding-starter/cover.jpg",
+    "cover": "/blog/covers/post01.jpg",
     "excerpt": "แนวทางทำแบรนด์เริ่มต้นให้สอดคล้อง",
     "author": "NEO SPARK AGENCY",
     "takeaway": [
@@ -414,7 +414,7 @@ const rawPosts: Omit<Post, "category">[] = [
       "Motion",
       "Ads"
     ],
-    "cover": "/blog/motion-workflow/cover.jpg",
+    "cover": "/blog/covers/post01.jpg",
     "excerpt": "ตั้งโครงเรื่อง 15–30 วินาที ตัดต่อหลายสัดส่วน",
     "author": "NEO SPARK AGENCY",
     "takeaway": [
@@ -465,7 +465,7 @@ const rawPosts: Omit<Post, "category">[] = [
       "Event",
       "Campaign"
     ],
-    "cover": "/blog/event-checklist/cover.jpg",
+    "cover": "/blog/covers/post01.jpg",
     "excerpt": "ตั้งเป้าหมายงาน โปรโมต ระบบลงทะเบียน เก็บลีดครบวงจร",
     "author": "NEO SPARK AGENCY",
     "takeaway": [
@@ -516,7 +516,7 @@ const rawPosts: Omit<Post, "category">[] = [
       "Retainer",
       "Management"
     ],
-    "cover": "/blog/monthly-care/cover.jpg",
+    "cover": "/blog/covers/post01.jpg",
     "excerpt": "สcope ดูแลรายเดือน คอนเทนต์ โฆษณา วัดผล รายงาน",
     "author": "NEO SPARK AGENCY",
     "takeaway": [
@@ -568,7 +568,7 @@ const rawPosts: Omit<Post, "category">[] = [
       "LINE OA",
       "Automation"
     ],
-    "cover": "/blog/crm-line-oa/cover.jpg",
+    "cover": "/blog/covers/post01.jpg",
     "excerpt": "เชื่อม CRM กับ LINE OA Trigger อัตโนมัติ",
     "author": "NEO SPARK AGENCY",
     "takeaway": [
@@ -619,7 +619,7 @@ const rawPosts: Omit<Post, "category">[] = [
       "Email",
       "Retention"
     ],
-    "cover": "/blog/email-basics/cover.jpg",
+    "cover": "/blog/covers/post01.jpg",
     "excerpt": "ตั้งระบบเก็บอีเมล กลยุทธ์ Welcome/Promo/Nurture",
     "author": "NEO SPARK AGENCY",
     "takeaway": [
@@ -670,7 +670,7 @@ const rawPosts: Omit<Post, "category">[] = [
       "Experiment",
       "Optimization"
     ],
-    "cover": "/blog/ab-test/cover.jpg",
+    "cover": "/blog/covers/post01.jpg",
     "excerpt": "ตั้งสมมติฐาน เลือกตัวชี้วัด ตัวอย่างเพียงพอ อ่านผลถูกต้อง",
     "author": "NEO SPARK AGENCY",
     "takeaway": [
@@ -721,7 +721,7 @@ const rawPosts: Omit<Post, "category">[] = [
       "Landing Page",
       "CRO"
     ],
-    "cover": "/blog/landing-convert/cover.jpg",
+    "cover": "/blog/covers/post01.jpg",
     "excerpt": "ส่วนสำคัญของ Landing: Hero/Proof/CTA และความเร็ว",
     "author": "NEO SPARK AGENCY",
     "takeaway": [
@@ -772,7 +772,7 @@ const rawPosts: Omit<Post, "category">[] = [
       "Performance",
       "Web Vitals"
     ],
-    "cover": "/blog/core-web-vitals/cover.jpg",
+    "cover": "/blog/covers/post01.jpg",
     "excerpt": "LCP/CLS/INP คืออะไร ปรับปรุงยังไงให้ผ่าน",
     "author": "NEO SPARK AGENCY",
     "takeaway": [
@@ -823,7 +823,7 @@ const rawPosts: Omit<Post, "category">[] = [
       "Ecommerce",
       "Payment"
     ],
-    "cover": "/blog/ecommerce-payment/cover.jpg",
+    "cover": "/blog/covers/post01.jpg",
     "excerpt": "ออกแบบชำระเงินให้สั้น/ชัด/ปลอดภัย รองรับหลายช่องทาง",
     "author": "NEO SPARK AGENCY",
     "takeaway": [
@@ -867,14 +867,14 @@ const rawPosts: Omit<Post, "category">[] = [
     ]
   },
   {
-    "slug": "headless-cms-directus-strapi-sanity",
+    "slug": "/blog/covers/post01.jpg",
     "title": "เลือก Headless CMS (Directus/Strapi/Sanity) อย่างไรให้เหมาะกับงาน",
     "date": "2025-02-11",
     "tags": [
       "Headless CMS",
       "Architecture"
     ],
-    "cover": "/blog/headless-cms/cover.jpg",
+    "cover": "/blog/covers/post01.jpg",
     "excerpt": "เปรียบเทียบการใช้งานจริงและกรณีเลือก",
     "author": "NEO SPARK AGENCY",
     "takeaway": [
@@ -925,7 +925,7 @@ const rawPosts: Omit<Post, "category">[] = [
       "AI",
       "Prompt"
     ],
-    "cover": "/blog/prompt-engineering/cover.jpg",
+    "cover": "/blog/covers/post01.jpg",
     "excerpt": "กรอบการถาม 5 ส่วน และเทคนิคถามเป็นรอบ",
     "author": "NEO SPARK AGENCY",
     "takeaway": [
@@ -976,7 +976,7 @@ const rawPosts: Omit<Post, "category">[] = [
       "AI Image",
       "Design"
     ],
-    "cover": "/blog/ai-image-workflow/cover.jpg",
+    "cover": "/blog/covers/post01.jpg",
     "excerpt": "ตั้ง Seed/Style คงที่ ทำชุด Key Visual Upscale/Refine",
     "author": "NEO SPARK AGENCY",
     "takeaway": [
@@ -1027,7 +1027,7 @@ const rawPosts: Omit<Post, "category">[] = [
       "Reporting",
       "Growth"
     ],
-    "cover": "/blog/reporting-insight/cover.jpg",
+    "cover": "/blog/covers/post01.jpg",
     "excerpt": "รายงานที่ดีสรุปสิ่งที่เกิดขึ้น เหตุผล และสิ่งที่จะทำต่อ",
     "author": "NEO SPARK AGENCY",
     "takeaway": [
@@ -1078,7 +1078,7 @@ const rawPosts: Omit<Post, "category">[] = [
       "SEO",
       "Web"
     ],
-    "cover": "/blog/seo-technical/cover.jpg",
+    "cover": "/blog/covers/post01.jpg",
     "excerpt": "โครงสร้าง URL/Schema/Sitemap/Robots ที่ควรมี",
     "author": "NEO SPARK AGENCY",
     "takeaway": [
@@ -1129,7 +1129,7 @@ const rawPosts: Omit<Post, "category">[] = [
       "SEO",
       "Local"
     ],
-    "cover": "/blog/local-seo/cover.jpg",
+    "cover": "/blog/covers/post01.jpg",
     "excerpt": "วิธีทำให้ร้าน/บริษัทค้นหาเจอง่ายในพื้นที่",
     "author": "NEO SPARK AGENCY",
     "takeaway": [
@@ -1180,7 +1180,7 @@ const rawPosts: Omit<Post, "category">[] = [
       "SEO",
       "Content"
     ],
-    "cover": "/blog/content-cluster/cover.jpg",
+    "cover": "/blog/covers/post01.jpg",
     "excerpt": "วางโครงบทความแบบ Cluster/Hub เพื่ออันดับยั่งยืน",
     "author": "NEO SPARK AGENCY",
     "takeaway": [
@@ -1231,7 +1231,7 @@ const rawPosts: Omit<Post, "category">[] = [
       "Content",
       "Process"
     ],
-    "cover": "/blog/social-calendar/cover.jpg",
+    "cover": "/blog/covers/post01.jpg",
     "excerpt": "จัด Sprint/Swimlane/Owner ให้ลื่นไหล",
     "author": "NEO SPARK AGENCY",
     "takeaway": [
@@ -1282,7 +1282,7 @@ const rawPosts: Omit<Post, "category">[] = [
       "Branding",
       "Copy"
     ],
-    "cover": "/blog/brand-voice/cover.jpg",
+    "cover": "/blog/covers/post01.jpg",
     "excerpt": "นิยามน้ำเสียง/คำที่ใช้/คำที่เลี่ยง และตัวอย่าง",
     "author": "NEO SPARK AGENCY",
     "takeaway": [

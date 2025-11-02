@@ -1,3 +1,4 @@
+// app/page.tsx
 import Hero from "@/components/home/Hero";
 import SubHero from "@/components/home/SubHero";
 import Services from "@/components/home/Services";
@@ -16,28 +17,50 @@ import MarketingSystem from "@/components/home/MarketingSystem";
 import MicroFeatures from "@/components/home/MicroFeatures";
 import HowWeHelp from "@/components/home/HowWeHelp";
 import Compare from "@/components/home/Compare";
+import SkewGallery from "@/components/gallery/SkewGallery";
+import ServiceCategories from "@/components/sections/ServiceCategories";
+import SmmShowcase from "@/components/SmmShowcase";
 
+import { buildMeta, jsonLd, SITE } from "./lib/seo";
 
-export default function Home(){
+export const metadata = buildMeta({
+  title: "เอเจนซี่ดิจิทัลครบวงจร — เว็บไซต์ คอนเทนต์ โฆษณา",
+  description: "ทำเว็บ Next.js เร็ว สวย แรง + คอนเทนต์/โมชั่น + ยิงแอดวัดผลครบวงจร",
+  canonical: "/",
+  image: "/og/og-home.jpg",
+});
+
+export default function Home() {
+  const org = jsonLd.organization();
+  const breadcrumb = jsonLd.breadcrumb([{ name: "Home", item: `${SITE.url}/` }]);
+
+  const works = Array.from({ length: 10 }).map(() => ({ src: "/graphics/g1.jpg" }));
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(org) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }} />
+
       <Hero />
       <SubHero />
       <Services />
-	  <WhyUs />
+      <ServiceCategories />
+      <SkewGallery id="work" title="Selected works" items={works} rows={3} cardWidth={560} cardHeight={315} gap={24} duration={26} skewDeg={4} className="mx-auto max-w-[1440px]" />
+      <WhyUs />
       <Partners />
-	  <Portfolio />
-	  <GraphicShowcase />
-	  <TechTools />
-	  <MarketingSystem />
-	  <MicroFeatures />
-	  <HowWeHelp /> 
-	  <EcomBoost />
-	  <ProcessSteps />
-	  <BlogPreview />
-	  <Testimonials />
+      <GraphicShowcase />
+      <MicroFeatures />
+      <HowWeHelp />
+      <SmmShowcase />
+      <TechTools />
+      <MarketingSystem />
+      <EcomBoost />
+      <ProcessSteps />
+      <Portfolio />
+      <BlogPreview />
+      <Testimonials />
       <FAQ />
-	  <Compare />
+      <Compare />
       <CTA />
     </>
   );

@@ -1,13 +1,13 @@
-// /seo.ts
+// app/lib/seo.ts
 import type { Metadata } from "next";
 
 export const SITE = {
   name: "NEO SPARK AGENCY",
-  slogan: "เอเจนซี่ดิจิทัลครบวงจร — การตลาดออนไลน์ เว็บไซต์ คอนเทนต์ โฆษณา วัดผลได้",
+  slogan: "เอเจนซี่ดิจิทัลครบวงจร — เว็บไซต์ คอนเทนต์ โฆษณา วัดผลได้",
   url: "https://neo-spark.agency",
   locale: "th_TH",
-  twitter: "@neospark", // ถ้ายังไม่มีทวิตเตอร์ ให้ลบทิ้งได้
-  ogImage: "/og/og-default.jpg", // 1200x630
+  twitter: "@neospark",
+  ogImage: "/og/og-default.jpg",
   logo: "/og/logo-neo.png",
 };
 
@@ -22,7 +22,7 @@ export function buildMeta({
   description = SITE.slogan,
   url = SITE.url,
   image = SITE.ogImage,
-  canonical,          // ถ้าส่ง path มา จะสร้าง canonical อัตโนมัติ
+  canonical,
   keywords = defaultKeywords,
 }: {
   title?: string; description?: string; url?: string; image?: string;
@@ -60,10 +60,7 @@ export function buildMeta({
       "max-image-preview": "large",
       "max-snippet": -1,
       "max-video-preview": -1,
-      googleBot: {
-        index: true,
-        follow: true,
-      },
+      googleBot: { index: true, follow: true },
     },
     icons: {
       icon: "/favicon.ico",
@@ -73,7 +70,6 @@ export function buildMeta({
   };
 }
 
-/** JSON-LD helpers */
 export const jsonLd = {
   organization() {
     return {
@@ -83,11 +79,7 @@ export const jsonLd = {
       url: SITE.url,
       logo: `${SITE.url}${SITE.logo}`,
       sameAs: [
-        // เติมลิงก์จริง
-        "https://www.facebook.com/...",
-        "https://www.linkedin.com/company/...",
-        "https://www.youtube.com/@...",
-        "https://www.instagram.com/...",
+        // เติมลิงก์โซเชียลจริงของคุณ
       ],
     };
   },

@@ -186,8 +186,12 @@ html, body {
 * { transition: background-color .25s, color .25s, border-color .25s, box-shadow .25s; }
 /* เคารพการลด motion */
 @media (prefers-reduced-motion: reduce) {
-  * { animation: none !important; transition: none !important; }
+  [data-allow-motion="true"] * {
+    animation: unset !important; /* ไม่ปิดทับแอนิเมชันของส่วนนี้ */
+    transition: unset !important;
+  }
 }
+
 .link-underline {
   background: linear-gradient(currentColor,currentColor) left bottom / 0 2px no-repeat;
   transition: background-size .3s cubic-bezier(.22,1,.36,1);
@@ -249,6 +253,54 @@ html, body {
 @media (min-width: 1024px) { /* lg:px-8 = 32px */
   .neo-coverflow .swiper-button-prev { transform: translateX(-32px); }
   .neo-coverflow .swiper-button-next { transform: translateX(32px); }
+}
+/* ---------- Skew Gallery Utilities ---------- */
+
+/* ขอบซ้ายขวาให้ค่อย ๆ เฟดหาย (เหมือนใน Framer) */
+.mask-edge {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0) 0%,
+    #000 12.5%,
+    #000 87.5%,
+    rgba(0, 0, 0, 0) 100%
+  );
+          mask-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0) 0%,
+    #000 12.5%,
+    #000 87.5%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+/* แถววิ่งแนวนอนแบบ seamless marquee */
+.skew-marquee-row {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.skew-marquee-track {
+  display: flex;
+  align-items: center;
+  gap: var(--marquee-gap, 24px);
+  /* ทำให้เลื่อนลื่นไม่หยุด */
+  animation: skew-marquee var(--marquee-duration, 28s) linear infinite;
+  /* reverse ด้วยทิศทาง (1 = ปกติ, -1 = กลับทิศ) */
+  animation-direction: normal;
+}
+
+@keyframes skew-marquee {
+  /* เราเลื่อนครึ่งหนึ่ง เพราะเรา duplicate รายการ 2 ชุด */
+  to {
+    transform: translateX(calc(var(--marquee-dir, 1) * -50%));
+  }
+}
+
+/* ทำให้ GPU ช่วยเรนเดอร์ลื่นขึ้น */
+.skew-marquee-track {
+  will-change: transform;
 }
 
 

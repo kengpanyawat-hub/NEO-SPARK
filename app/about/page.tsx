@@ -1,6 +1,7 @@
 // app/about/page.tsx
 import Image from "next/image";
 import type { Metadata } from "next";
+import AboutImpact from "@/components/about/AboutImpact";
 
 /* ---------------------------------- SEO ---------------------------------- */
 // ปรับแต่ง Meta ให้ครบถ้วน และคงโครงเรื่อง/คำอธิบายที่คุณใช้อยู่
@@ -196,6 +197,7 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+	  <AboutImpact />
 
       {/* ค่านิยม / ข้อความทำงานร่วมกัน (แถบด้านบน + กล่อง Quote + 3 เสาหลัก) */}
       <section className="container-xl mt-10">
