@@ -24,11 +24,11 @@ import SmmShowcase from "@/components/SmmShowcase";
 import { buildMeta, jsonLd, SITE } from "./lib/seo";
 
 export const metadata = buildMeta({
-  // ใช้ absolute จะไม่ต่อ template
-  title: { absolute: "NEO SPARK — เอเจนซี่ดิจิทัลครบวงจร" } as any,
-  description: "ทำเว็บ Next.js เร็ว สวย แรง + คอนเทนต์/โมชั่น + ยิงแอดวัดผลครบวงจร",
+  title: "NEO SPARK AGENCY | เอเจนซี่ดิจิทัลครบวงจร",
+  description: "เอเจนซี่การตลาดออนไลน์ครบวงจร รับทำเว็บไซต์ กราฟิก โมชั่น วีดีโอ โฆษณา และอีเวนต์",
   canonical: "/",
   image: "/og/og-home.jpg",
+  noTemplate: true, // ✅ ใช้สตริงตรง ๆ กัน [object Object]
 });
 
 export default function Home() {
