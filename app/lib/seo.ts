@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 export const SITE = {
   name: "NEO SPARK AGENCY",
   slogan: "เอเจนซี่ดิจิทัลครบวงจร — เว็บไซต์ คอนเทนต์ โฆษณา วัดผลได้",
-  url: "https://neo-spark.agency",
+  url: "https://www.neo-spark-agency.com",
   locale: "th_TH",
   twitter: "@neospark",
   ogImage: "/og/og-default.jpg",
@@ -24,16 +24,24 @@ export function buildMeta({
   image = SITE.ogImage,
   canonical,
   keywords = defaultKeywords,
+  /** ถ้า true จะตั้ง title เป็นสตริงล้วน (ไม่ใช้ template) */
+  noTemplate = false,
 }: {
-  title?: string; description?: string; url?: string; image?: string;
-  canonical?: string; keywords?: string[];
+  title?: string;
+  description?: string;
+  url?: string;
+  image?: string;
+  canonical?: string;
+  keywords?: string[];
+  noTemplate?: boolean;
 }): Metadata {
   const abs = (p?: string) => (p?.startsWith("http") ? p : `${SITE.url}${p ?? ""}`);
   const pageUrl = canonical ? abs(canonical) : url;
 
   return {
     metadataBase: new URL(SITE.url),
-    title: { default: title, template: `%s | ${SITE.name}` },
+    // ถ้า noTemplate = true -> ใช้สตริงตรง ๆ (กัน [object Object] หรือ title ยาวเกิน)
+    title: noTemplate ? title : { default: title, template: `%s | ${SITE.name}` },
     description,
     applicationName: SITE.name,
     keywords,
@@ -78,9 +86,7 @@ export const jsonLd = {
       name: SITE.name,
       url: SITE.url,
       logo: `${SITE.url}${SITE.logo}`,
-      sameAs: [
-        // เติมลิงก์โซเชียลจริงของคุณ
-      ],
+      sameAs: [],
     };
   },
   breadcrumb(items: { name: string; item: string }[]) {
@@ -99,17 +105,24 @@ export const jsonLd = {
     return {
       "@context": "https://schema.org",
       "@type": "CollectionPage",
-      name, url,
+      name,
+      url,
     };
   },
   article({ headline, url, image, datePublished, dateModified }: any) {
     return {
       "@context": "https://schema.org",
       "@type": "Article",
-      headline, url,
+      headline,
+      url,
       image: [`${SITE.url}${image}`],
-      datePublished, dateModified,
-      publisher: { "@type": "Organization", name: SITE.name, logo: { "@type": "ImageObject", url: `${SITE.url}${SITE.logo}` } },
+      datePublished,
+      dateModified,
+      publisher: {
+        "@type": "Organization",
+        name: SITE.name,
+        logo: { "@type": "ImageObject", url: `${SITE.url}${SITE.logo}` },
+      },
     };
   },
 };
