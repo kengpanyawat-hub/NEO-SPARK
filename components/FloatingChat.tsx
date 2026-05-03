@@ -25,7 +25,6 @@ let EXTERNAL_LINKS: {
 
 try {
   // ถ้ามี "@/config/supportLinks" อยู่จริง ให้ใช้ข้อมูลจากนั้น
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const mod = require("@/config/supportLinks");
   EXTERNAL_LINKS = mod.SUPPORT_LINKS || mod.default || [];
 } catch {

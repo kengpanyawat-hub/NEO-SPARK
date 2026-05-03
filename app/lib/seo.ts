@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 export const SITE = {
   name: "NEO SPARK AGENCY",
   slogan: "เอเจนซี่ดิจิทัลครบวงจร — เว็บไซต์ คอนเทนต์ โฆษณา วัดผลได้",
-  url: "https://www.neo-spark-agency.com",
+  url: "https://neo-spark.agency",
   locale: "th_TH",
   twitter: "@neospark",
   ogImage: "/og/og-default.jpg",
