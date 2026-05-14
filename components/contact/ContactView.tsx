@@ -367,31 +367,52 @@ function FloatTextArea({
   );
 }
 
-/* ---------- Contact Form (mailto link) ---------- */
+/* ---------- Contact Form (Resend API) ---------- */
 function ContactForm({ email, lineOA }: { email: string; lineOA: string }) {
   const [name, setName] = React.useState("");
+  const [userEmail, setUserEmail] = React.useState("");
   const [phone, setPhone] = React.useState("");
   const [service, setService] = React.useState("");
-  const [subject, setSubject] = React.useState("");
+  const [budget, setBudget] = React.useState("");
   const [message, setMessage] = React.useState("");
+  const [status, setStatus] = React.useState<"idle" | "loading" | "success" | "error">("idle");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const body = [
-      `ชื่อ: ${name}`,
-      `เบอร์โทร: ${phone}`,
-      `บริการที่สนใจ: ${service}`,
-      `หัวข้อ: ${subject}`,
-      `รายละเอียด: ${message}`,
-    ].join("%0A");
-    const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject || "ติดต่อ NEO SPARK AGENCY")}&body=${body}`;
-    window.location.href = mailtoUrl;
+    setStatus("loading");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email: userEmail, phone, service, budget, message }),
+      });
+      if (res.ok) {
+        setStatus("success");
+        setName(""); setUserEmail(""); setPhone(""); setService(""); setBudget(""); setMessage("");
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
   };
+
+  if (status === "success") {
+    return (
+      <div className="mt-6 rounded-2xl border border-green-500/30 bg-green-500/10 p-6 text-center">
+        <p className="text-2xl">✅</p>
+        <p className="mt-2 font-semibold text-green-300">ส่งข้อความสำเร็จแล้ว!</p>
+        <p className="mt-1 text-sm text-white/60">ทีมงานจะติดต่อกลับภายใน 24 ชั่วโมง</p>
+        <button onClick={() => setStatus("idle")} className="mt-4 text-sm text-violet-400 underline">ส่งข้อความใหม่</button>
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} className="mt-5 grid gap-4 md:grid-cols-2">
       <FloatInput name="name" label="ชื่อของคุณ *" required value={name} onChange={setName} />
-      <FloatInput name="phone" label="เบอร์โทร *" required value={phone} onChange={setPhone} />
+      <FloatInput name="email" label="อีเมล *" required value={userEmail} onChange={setUserEmail} />
+      <FloatInput name="phone" label="เบอร์โทร" value={phone} onChange={setPhone} />
       <FloatSelect
         name="service"
         label="บริการที่สนใจ"
@@ -411,21 +432,31 @@ function ContactForm({ email, lineOA }: { email: string; lineOA: string }) {
         ]}
         className="md:col-span-2"
       />
-      <FloatInput name="subject" label="หัวข้อ" className="md:col-span-2" value={subject} onChange={setSubject} />
+      <FloatSelect
+        name="budget"
+        label="งบประมาณโดยประมาณ"
+        value={budget}
+        onChange={setBudget}
+        options={["ต่ำกว่า 10,000 บาท", "10,000 – 30,000 บาท", "30,000 – 100,000 บาท", "100,000 บาทขึ้นไป", "ยังไม่แน่ใจ"]}
+      />
       <FloatTextArea
         name="message"
-        label="รายละเอียดงาน / งบประมาณโดยประมาณ"
-        rows={6}
+        label="รายละเอียดงาน *"
+        rows={5}
         className="md:col-span-2"
         value={message}
         onChange={setMessage}
       />
+      {status === "error" && (
+        <p className="md:col-span-2 text-sm text-red-400">เกิดข้อผิดพลาด กรุณาลองใหม่หรือติดต่อผ่าน LINE</p>
+      )}
       <div className="md:col-span-2 flex flex-col sm:flex-row gap-3">
         <button
-          className="btn-primary flex-1 inline-flex items-center justify-center gap-2"
+          className="btn-primary flex-1 inline-flex items-center justify-center gap-2 disabled:opacity-60"
           type="submit"
+          disabled={status === "loading"}
         >
-          ส่งอีเมล <Mail size={16} />
+          {status === "loading" ? "กำลังส่ง..." : <>ส่งข้อความ <Mail size={16} /></>}
         </button>
         <a
           href={lineOA}
