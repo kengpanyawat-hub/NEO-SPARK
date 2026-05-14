@@ -297,13 +297,13 @@ export default function AboutPage() {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {TEAM.map((m) => (
             <div key={m.name} className="card">
-              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl border border-white/10">
+              <div className="relative aspect-[3/4] w-full overflow-hidden rounded-xl border border-white/10">
                 <Image
                   src={m.img}
                   alt={m.name}
                   width={640}
-                  height={480}
-                  className="h-full w-full object-cover"
+                  height={853}
+                  className="h-full w-full object-cover object-top"
                 />
               </div>
               <div className="mt-3">
