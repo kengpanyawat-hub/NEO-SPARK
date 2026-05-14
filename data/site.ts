@@ -1,11 +1,11 @@
 export const site = {
   phone: "0615522545",
   email: "neo.spark@gmail.com",
-  lineOA: "https://lin.ee/pORMgWT", // TODO: ใส่ลิงก์จริง
-  facebook: "https://facebook.com/",
-  instagram: "https://instagram.com/",
-  youtube: "https://youtube.com/",
-  tiktok: "https://tiktok.com/",
-  twitter: "https://x.com/",
-  telegram: "https://t.me/"
+  lineOA: "https://lin.ee/WYbi1D5",
+  facebook: "https://www.facebook.com/NeoSparkAgency",
+  instagram: "https://www.instagram.com/neo.spark.agency/",
+  youtube: "",
+  tiktok: "",
+  twitter: "",
+  telegram: ""
 } as const;

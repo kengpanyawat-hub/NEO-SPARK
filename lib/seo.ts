@@ -1,12 +1,11 @@
-// /seo.ts
 import type { Metadata } from "next";
 
 export const SITE = {
   name: "NEO SPARK AGENCY",
   slogan: "เอเจนซี่ดิจิทัลครบวงจร — การตลาดออนไลน์ เว็บไซต์ คอนเทนต์ โฆษณา วัดผลได้",
-  url: "https://neo-spark.agency",
+  url: "https://www.neo-spark-agency.com",
   locale: "th_TH",
-  twitter: "@neospark", // ถ้ายังไม่มีทวิตเตอร์ ให้ลบทิ้งได้
+  twitter: "@neospark",
   ogImage: "/og/og-default.jpg", // 1200x630
   logo: "/og/logo-neo.png",
 };
@@ -22,102 +21,74 @@ export function buildMeta({
   description = SITE.slogan,
   url = SITE.url,
   image = SITE.ogImage,
-  canonical,          // ถ้าส่ง path มา จะสร้าง canonical อัตโนมัติ
+  canonical,
   keywords = defaultKeywords,
 }: {
   title?: string; description?: string; url?: string; image?: string;
   canonical?: string; keywords?: string[];
 }): Metadata {
-  const abs = (p?: string) => (p?.startsWith("http") ? p : `${SITE.url}${p ?? ""}`);
-  const pageUrl = canonical ? abs(canonical) : url;
-
+  const canonicalUrl = canonical ? `${SITE.url}${canonical}` : url;
   return {
-    metadataBase: new URL(SITE.url),
-    title: { default: title, template: `%s | ${SITE.name}` },
+    title,
     description,
-    applicationName: SITE.name,
     keywords,
-    alternates: { canonical: pageUrl },
+    alternates: { canonical: canonicalUrl },
     openGraph: {
-      type: "website",
-      url: pageUrl,
       title,
       description,
+      url: canonicalUrl,
       siteName: SITE.name,
-      images: [{ url: abs(image), width: 1200, height: 630, alt: title }],
       locale: SITE.locale,
+      type: "website",
+      images: [{ url: image, width: 1200, height: 630, alt: title }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      site: SITE.twitter,
-      images: [abs(image)],
-    },
-    robots: {
-      index: true,
-      follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
-      googleBot: {
-        index: true,
-        follow: true,
-      },
-    },
-    icons: {
-      icon: "/favicon.ico",
-      shortcut: "/favicon.ico",
-      apple: "/apple-touch-icon.png",
+      images: [image],
     },
   };
 }
 
-/** JSON-LD helpers */
 export const jsonLd = {
-  organization() {
-    return {
-      "@context": "https://schema.org",
+  organization: () => ({
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: SITE.name,
+    url: SITE.url,
+    logo: `${SITE.url}${SITE.logo}`,
+    sameAs: [
+      "https://www.facebook.com/NeoSparkAgency",
+      "https://www.instagram.com/neo.spark.agency/",
+    ],
+  }),
+  breadcrumb: (items: { name: string; url: string }[]) => ({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      item: `${SITE.url}${item.url}`,
+    })),
+  }),
+  article: (data: {
+    title: string; description: string; url: string;
+    image: string; datePublished: string; author: string;
+  }) => ({
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: data.title,
+    description: data.description,
+    url: `${SITE.url}${data.url}`,
+    image: `${SITE.url}${data.image}`,
+    datePublished: data.datePublished,
+    author: { "@type": "Person", name: data.author },
+    publisher: {
       "@type": "Organization",
       name: SITE.name,
-      url: SITE.url,
-      logo: `${SITE.url}${SITE.logo}`,
-      sameAs: [
-        // เติมลิงก์จริง
-        "https://www.facebook.com/...",
-        "https://www.linkedin.com/company/...",
-        "https://www.youtube.com/@...",
-        "https://www.instagram.com/...",
-      ],
-    };
-  },
-  breadcrumb(items: { name: string; item: string }[]) {
-    return {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: items.map((it, i) => ({
-        "@type": "ListItem",
-        position: i + 1,
-        name: it.name,
-        item: it.item,
-      })),
-    };
-  },
-  collection({ name, url }: { name: string; url: string }) {
-    return {
-      "@context": "https://schema.org",
-      "@type": "CollectionPage",
-      name, url,
-    };
-  },
-  article({ headline, url, image, datePublished, dateModified }: any) {
-    return {
-      "@context": "https://schema.org",
-      "@type": "Article",
-      headline, url,
-      image: [`${SITE.url}${image}`],
-      datePublished, dateModified,
-      publisher: { "@type": "Organization", name: SITE.name, logo: { "@type": "ImageObject", url: `${SITE.url}${SITE.logo}` } },
-    };
-  },
+      logo: { "@type": "ImageObject", url: `${SITE.url}${SITE.logo}` },
+    },
+  }),
 };

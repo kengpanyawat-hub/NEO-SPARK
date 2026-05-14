@@ -1,1 +1,12 @@
-export const clients = [{name:'Acme Co.'},{name:'Nova Labs'},{name:'Bright Studio'},{name:'Fin Organizer'},{name:'Lawyer Dream'}];
+export const clients = [
+  { name: "Alisa Ints" },
+  { name: "Fin Organizer" },
+  { name: "Health Planner" },
+  { name: "C&S Assist" },
+  { name: "Hippo Air" },
+  { name: "Lambda Scientific" },
+  { name: "Lawyer Dream" },
+  { name: "Long Trade" },
+  { name: "Plantnery" },
+  { name: "Tanhom Brand" },
+];

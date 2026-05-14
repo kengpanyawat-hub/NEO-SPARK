@@ -111,13 +111,11 @@ function StructuredData() {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "NEO SPARK AGENCY",
-    url: "https://neo-spark.agency",
-    logo: "https://neo-spark.agency/og/logo-neo.png",
+    url: "https://www.neo-spark-agency.com",
+    logo: "https://www.neo-spark-agency.com/og/logo-neo.png",
     sameAs: [
-      "https://www.facebook.com/…", // ใส่ลิงก์จริงของคุณ
-      "https://www.youtube.com/@…",
-      "https://www.linkedin.com/company/…",
-      "https://www.instagram.com/…",
+      "https://www.facebook.com/NeoSparkAgency",
+      "https://www.instagram.com/neo.spark.agency/",
     ],
   };
 
@@ -125,20 +123,20 @@ function StructuredData() {
     "@context": "https://schema.org",
     "@type": "WebPage",
     name: "About | NEO SPARK",
-    url: "https://neo-spark.agency/about",
+    url: "https://www.neo-spark-agency.com/about",
     description:
       "NEO SPARK AGENCY — เอเจนซี่ดิจิทัลครบวงจร ออกแบบ-พัฒนาเว็บไซต์ โมชัน/วิดีโอ โฆษณาออนไลน์ และดูแลต่อเนื่อง",
     inLanguage: "th-TH",
-    breadcrumb: { "@id": "https://neo-spark.agency/about#breadcrumb" },
+    breadcrumb: { "@id": "https://www.neo-spark-agency.com/about#breadcrumb" },
   };
 
   const breadcrumb = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    "@id": "https://neo-spark.agency/about#breadcrumb",
+    "@id": "https://www.neo-spark-agency.com/about#breadcrumb",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://neo-spark.agency/" },
-      { "@type": "ListItem", position: 2, name: "About", item: "https://neo-spark.agency/about" },
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://www.neo-spark-agency.com/" },
+      { "@type": "ListItem", position: 2, name: "About", item: "https://www.neo-spark-agency.com/about" },
     ],
   };
 

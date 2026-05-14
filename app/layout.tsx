@@ -16,10 +16,10 @@ export const metadata: Metadata = {
   title: "NEO SPARK AGENCY — One-Stop Creative & Performance",
   description:
     "เอเจนซี่การตลาดออนไลน์ครบวงจร รับทำเว็บไซต์ กราฟิก โมชัน วิดีโอ โฆษณา และอีเวนต์",
-  alternates: { canonical: "https://neo-spark.agency" },
+  alternates: { canonical: "https://www.neo-spark-agency.com" },
   openGraph: {
     title: "NEO SPARK AGENCY",
-    images: ["/og.jpg"],
+    images: ["/og/og-default.jpg"],
     type: "website",
   },
   icons: { icon: "/logo.svg" },

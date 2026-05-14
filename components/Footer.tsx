@@ -16,7 +16,7 @@ const TAX_ID = "0125565000041";
 const TEL_DISPLAY = "061-552-2545";
 const TEL_LINK = "tel:0615522545";
 const LINE_ID = "@neo.spark";
-const LINE_LINK = "https://lin.ee/pORMgWT";
+const LINE_LINK = "https://lin.ee/WYbi1D5";
 const EMAIL = "neo.spark@gmail.com";
 
 function Footer() {

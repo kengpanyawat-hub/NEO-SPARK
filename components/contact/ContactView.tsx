@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { motion } from "framer-motion";
 import {
   Phone,
@@ -19,13 +20,13 @@ const site = {
   phone: "0615522545",
   email: "neo.spark@gmail.com",
   address: "Bangkok, Thailand",
-  lineOA: "https://lin.ee/pORMgWT",
-  facebook: "https://facebook.com/neosparkagency",
-  instagram: "https://instagram.com/neosparkagency",
-  youtube: "https://youtube.com/@neosparkagency",
-  tiktok: "https://tiktok.com/@neosparkagency",
-  twitter: "https://x.com/neosparkagency",
-  website: "https://www.neo-spark.com",
+  lineOA: "https://lin.ee/WYbi1D5",
+  facebook: "https://www.facebook.com/NeoSparkAgency",
+  instagram: "https://www.instagram.com/neo.spark.agency/",
+  youtube: "",
+  tiktok: "",
+  twitter: "",
+  website: "https://www.neo-spark-agency.com",
   mapEmbed:
     "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3875.726705194833!2d100.529611!3d13.736717!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e2992c3a4c1a0f%3A0x8bafc67e0e2f0a15!2zQmFuZ2tvaywgVGhhaWxhbmQ!5e0!3m2!1sth!2sth!4v1700000000000",
 };
@@ -181,52 +182,10 @@ export default function ContactView() {
               </a>
             </p>
 
-            <form
-              action={`mailto:${site.email}`}
-              method="post"
-              encType="text/plain"
-              className="mt-5 grid gap-4 md:grid-cols-2"
-            >
-              <FloatInput name="name" label="ชื่อของคุณ *" required />
-              <FloatInput name="phone" label="เบอร์โทร *" required />
-
-              <FloatSelect
-                name="service"
-                label="บริการที่สนใจ"
-                required
-                options={[
-                  "เว็บไซต์ & ระบบออนไลน์",
-                  "ออกแบบแบรนด์ & กราฟิก",
-                  "โมชัน/วิดีโอ (ตัดต่อ/ถ่ายทำ)",
-                  "โฆษณาออนไลน์ & การตลาดดิจิทัล",
-                  "งานอีเวนต์/โปรดักชัน",
-                  "ดูแลรายเดือน/รายครั้ง",
-                  "CRM/Chatbot/Automation",
-                  "Consult/Workshop",
-                  "อื่น ๆ (โปรดระบุในรายละเอียด)",
-                ]}
-                className="md:col-span-2"
-              />
-
-              <FloatInput name="subject" label="หัวข้อ" className="md:col-span-2" />
-              <FloatTextArea
-                name="message"
-                label="รายละเอียดงาน / งบประมาณโดยประมาณ"
-                rows={6}
-                className="md:col-span-2"
-              />
-
-              <button
-                className="btn-primary md:col-span-2 inline-flex items-center justify-center gap-2"
-                type="submit"
-              >
-                ส่งอีเมล <Mail size={16} />
-              </button>
-            </form>
+            <ContactForm email={site.email} lineOA={site.lineOA} />
 
             <p className="mt-3 text-xs text-white/50">
-              * หากต้องการเก็บลงฐานข้อมูลและส่งเมลอัตโนมัติ
-              แนะนำสร้าง API Route แล้วโพสต์ฟอร์มไปยัง API ดังกล่าว
+              * กรอกฟอร์มแล้วกด "ส่งข้อความ" เพื่อเปิด Gmail/Email app พร้อมข้อมูลที่กรอกไว้
             </p>
           </motion.section>
 
@@ -348,11 +307,15 @@ function FloatInput({
   label,
   className,
   required,
+  value,
+  onChange,
 }: {
   name: string;
   label: string;
   className?: string;
   required?: boolean;
+  value?: string;
+  onChange?: (v: string) => void;
 }) {
   return (
     <label className={`group relative ${className ?? ""}`}>
@@ -360,6 +323,8 @@ function FloatInput({
         name={name}
         required={required}
         placeholder=" "
+        value={value}
+        onChange={onChange ? (e) => onChange(e.target.value) : undefined}
         className="peer w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none ring-0 transition focus:border-neo-violet/60"
       />
       <span className="pointer-events-none absolute left-3 top-3 rounded bg-black/40 px-2 text-xs text-white/60 transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-white/50 peer-focus:-top-2 peer-focus:bg-black/50 peer-focus:text-white/70">
@@ -375,11 +340,15 @@ function FloatTextArea({
   label,
   rows = 5,
   className,
+  value,
+  onChange,
 }: {
   name: string;
   label: string;
   rows?: number;
   className?: string;
+  value?: string;
+  onChange?: (v: string) => void;
 }) {
   return (
     <label className={`group relative ${className ?? ""}`}>
@@ -387,12 +356,87 @@ function FloatTextArea({
         name={name}
         rows={rows}
         placeholder=" "
+        value={value}
+        onChange={onChange ? (e) => onChange(e.target.value) : undefined}
         className="peer w-full rounded-xl border border-white/10 bg-white/5 p-3 outline-none focus:border-neo-violet/60"
       />
       <span className="pointer-events-none absolute left-3 top-3 rounded bg-black/40 px-2 text-xs text-white/60 transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:bg-transparent peer-placeholder-shown:text-white/50 peer-focus:-top-2 peer-focus:bg-black/50 peer-focus:text-white/70">
         {label}
       </span>
     </label>
+  );
+}
+
+/* ---------- Contact Form (mailto link) ---------- */
+function ContactForm({ email, lineOA }: { email: string; lineOA: string }) {
+  const [name, setName] = React.useState("");
+  const [phone, setPhone] = React.useState("");
+  const [service, setService] = React.useState("");
+  const [subject, setSubject] = React.useState("");
+  const [message, setMessage] = React.useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const body = [
+      `ชื่อ: ${name}`,
+      `เบอร์โทร: ${phone}`,
+      `บริการที่สนใจ: ${service}`,
+      `หัวข้อ: ${subject}`,
+      `รายละเอียด: ${message}`,
+    ].join("%0A");
+    const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject || "ติดต่อ NEO SPARK AGENCY")}&body=${body}`;
+    window.location.href = mailtoUrl;
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="mt-5 grid gap-4 md:grid-cols-2">
+      <FloatInput name="name" label="ชื่อของคุณ *" required value={name} onChange={setName} />
+      <FloatInput name="phone" label="เบอร์โทร *" required value={phone} onChange={setPhone} />
+      <FloatSelect
+        name="service"
+        label="บริการที่สนใจ"
+        required
+        value={service}
+        onChange={setService}
+        options={[
+          "เว็บไซต์ & ระบบออนไลน์",
+          "ออกแบบแบรนด์ & กราฟิก",
+          "โมชัน/วิดีโอ (ตัดต่อ/ถ่ายทำ)",
+          "โฆษณาออนไลน์ & การตลาดดิจิทัล",
+          "งานอีเวนต์/โปรดักชัน",
+          "ดูแลรายเดือน/รายครั้ง",
+          "CRM/Chatbot/Automation",
+          "Consult/Workshop",
+          "อื่น ๆ (โปรดระบุในรายละเอียด)",
+        ]}
+        className="md:col-span-2"
+      />
+      <FloatInput name="subject" label="หัวข้อ" className="md:col-span-2" value={subject} onChange={setSubject} />
+      <FloatTextArea
+        name="message"
+        label="รายละเอียดงาน / งบประมาณโดยประมาณ"
+        rows={6}
+        className="md:col-span-2"
+        value={message}
+        onChange={setMessage}
+      />
+      <div className="md:col-span-2 flex flex-col sm:flex-row gap-3">
+        <button
+          className="btn-primary flex-1 inline-flex items-center justify-center gap-2"
+          type="submit"
+        >
+          ส่งอีเมล <Mail size={16} />
+        </button>
+        <a
+          href={lineOA}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-ghost flex-1 inline-flex items-center justify-center gap-2"
+        >
+          ส่งผ่าน LINE <MessageCircle size={16} />
+        </a>
+      </div>
+    </form>
   );
 }
 
@@ -403,18 +447,23 @@ function FloatSelect({
   options,
   className,
   required,
+  value,
+  onChange,
 }: {
   name: string;
   label: string;
   options: string[];
   className?: string;
   required?: boolean;
+  value?: string;
+  onChange?: (v: string) => void;
 }) {
   return (
     <label className={`group relative ${className ?? ""}`}>
       <select
         name={name}
-        defaultValue=""
+        value={value ?? ""}
+        onChange={onChange ? (e) => onChange(e.target.value) : undefined}
         required={required}
         className="peer w-full appearance-none rounded-xl border border-white/10 bg-white/5 p-3 pr-10 text-white/90 outline-none transition focus:border-neo-violet/60"
       >
