@@ -91,12 +91,9 @@ const EXPERTISE = [
 ];
 
 const TEAM = [
-  { name: "Keng Panyawat", role: "Founder & Tech Lead", img: "/team/keng.jpg" },
-  { name: "Mint R.",        role: "Creative Director",  img: "/team/mint.jpg" },
-  { name: "Beam S.",        role: "UI/UX Designer",     img: "/team/beam.jpg" },
-  { name: "Top T.",         role: "Frontend Engineer",  img: "/team/top.jpg" },
-  { name: "Proud C.",       role: "Motion/Video",       img: "/team/proud.jpg" },
-  { name: "Ben A.",         role: "Ads Specialist",     img: "/team/ben.jpg" },
+  { name: "Panyawat Hadtee",           role: "CEO & FOUNDER", img: "/team/panyawat.png" },
+  { name: "Suttisak Mankasikam",       role: "Director",      img: "/team/suttisak.png" },
+  { name: "Korrachan Durongpaphanon", role: "Director",      img: "/team/korrachan.png" },
 ];
 
 const PARTNERS6 = [
