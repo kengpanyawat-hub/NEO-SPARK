@@ -93,15 +93,44 @@ export default function Partners({
 }: {
   apiPartners?: { name: string; logoUrl: string | null }[];
 }) {
-  // ถ้ามีข้อมูลจาก API และมี logoUrl ให้ใช้ข้อมูลนั้น
-  // ถ้าไม่มี logoUrl ให้ใช้ static fallback ตาม index
-  const allItems: Item[] =
-    apiPartners && apiPartners.length > 0
-      ? apiPartners.map((p, i) => ({
-          src: p.logoUrl || STATIC_PARTNERS[i % STATIC_PARTNERS.length]?.src || "/partners/1.png",
-          name: p.name,
-        }))
-      : STATIC_PARTNERS;
+  /**
+   * กลยุทธ์การ merge:
+   * 1. เริ่มจาก STATIC_PARTNERS เป็นฐาน (38 รายการ — ครบทุกโลโก้)
+   * 2. ถ้า API มีข้อมูล ให้ override logoUrl สำหรับ partner ที่ชื่อตรงกัน (case-insensitive)
+   * 3. ถ้า API มี partner ใหม่ที่ไม่มีใน static ให้เพิ่มต่อท้าย (พร้อม logoUrl)
+   * ผลลัพธ์: แสดงโลโก้ครบเสมอ ไม่ขาดหาย
+   */
+  const allItems: Item[] = (() => {
+    if (!apiPartners || apiPartners.length === 0) return STATIC_PARTNERS;
+
+    // สร้าง map ชื่อ → logoUrl จาก API (เฉพาะที่มี logoUrl)
+    const apiLogoMap = new Map<string, string>();
+    const apiNewItems: Item[] = [];
+
+    for (const p of apiPartners) {
+      const key = p.name.trim().toLowerCase();
+      if (p.logoUrl) {
+        apiLogoMap.set(key, p.logoUrl);
+      }
+      // ตรวจว่ามีใน static หรือไม่
+      const inStatic = STATIC_PARTNERS.some(
+        (s) => s.name.toLowerCase() === key
+      );
+      if (!inStatic && p.logoUrl) {
+        apiNewItems.push({ src: p.logoUrl, name: p.name });
+      }
+    }
+
+    // Override static items ด้วย logoUrl จาก API ถ้าชื่อตรงกัน
+    const merged = STATIC_PARTNERS.map((s) => {
+      const key = s.name.toLowerCase();
+      const apiSrc = apiLogoMap.get(key);
+      return apiSrc ? { src: apiSrc, name: s.name } : s;
+    });
+
+    // เพิ่ม partner ใหม่จาก API ที่ไม่มีใน static
+    return [...merged, ...apiNewItems];
+  })();
 
   // แบ่งเป็น 4 คอลัมน์
   const chunkSize = Math.ceil(allItems.length / 4);
