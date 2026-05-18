@@ -1,7 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Lazy initialize — ไม่ throw ตอน build เมื่อยังไม่มี RESEND_API_KEY
+function getResend(): Resend {
+  const apiKey = process.env.RESEND_API_KEY
+  if (!apiKey) {
+    throw new Error('RESEND_API_KEY is not configured')
+  }
+  return new Resend(apiKey)
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,6 +18,17 @@ export async function POST(req: NextRequest) {
     if (!name || !email || !message) {
       return NextResponse.json({ error: 'กรุณากรอกข้อมูลที่จำเป็น' }, { status: 400 })
     }
+
+    // ตรวจสอบ RESEND_API_KEY ก่อนส่ง
+    if (!process.env.RESEND_API_KEY) {
+      console.warn('RESEND_API_KEY is not set — email not sent')
+      return NextResponse.json(
+        { error: 'ระบบส่งอีเมลยังไม่พร้อมใช้งาน กรุณาติดต่อทาง LINE OA' },
+        { status: 503 }
+      )
+    }
+
+    const resend = getResend()
 
     // ส่งอีเมลแจ้งเตือนไปยังทีม NEO SPARK
     const { error } = await resend.emails.send({
