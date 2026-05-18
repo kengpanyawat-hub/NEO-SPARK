@@ -2,6 +2,7 @@
 import Image from "next/image";
 import type { Metadata } from "next";
 import AboutImpact from "@/components/about/AboutImpact";
+import { getTeamMembers } from "@/lib/api";
 
 /* ---------------------------------- SEO ---------------------------------- */
 // ปรับแต่ง Meta ให้ครบถ้วน และคงโครงเรื่อง/คำอธิบายที่คุณใช้อยู่
@@ -90,11 +91,7 @@ const EXPERTISE = [
   "E-commerce • Payment • Booking",
 ];
 
-const TEAM = [
-  { name: "Panyawat Hadtee",           role: "CEO & FOUNDER", img: "/team/panyawat.png" },
-  { name: "Suttisak Mankasikam",       role: "Director",      img: "/team/suttisak.png" },
-  { name: "Korrachan Durongpaphanon", role: "Director",      img: "/team/korrachan.png" },
-];
+// TEAM is now fetched from Admin Panel API (see AboutPage below)
 
 const PARTNERS6 = [
   { name: "IRVING",         src: "/partners/1.png"  },
@@ -150,7 +147,17 @@ function StructuredData() {
 }
 
 /* ---------------------------------- PAGE --------------------------------- */
-export default function AboutPage() {
+export const revalidate = 60;
+
+export default async function AboutPage() {
+  const teamData = await getTeamMembers();
+  const TEAM = teamData.length > 0
+    ? teamData.map((m) => ({ name: m.name, role: m.position, img: m.imageUrl || `/team/${m.name.split(' ')[0].toLowerCase()}.png` }))
+    : [
+        { name: "Panyawat Hadtee",           role: "CEO & FOUNDER", img: "/team/panyawat.png" },
+        { name: "Suttisak Mankasikam",       role: "Director",      img: "/team/suttisak.png" },
+        { name: "Korrachan Durongpaphanon", role: "Director",      img: "/team/korrachan.png" },
+      ];
   return (
     <main className="pb-20">
       {/* JSON-LD */}
