@@ -10,6 +10,19 @@
 const API_BASE = process.env.NEXT_PUBLIC_ADMIN_API_URL || "https://neoadmin-ivhumdtn.manus.space/api/public/v1";
 const API_KEY = process.env.ADMIN_API_KEY || "";
 const REVALIDATE = 60; // seconds — adjust per page needs
+const ADMIN_ORIGIN = "https://neoadmin-ivhumdtn.manus.space";
+
+// ─── URL helper ───────────────────────────────────────────────────────────────
+
+/**
+ * แปลง relative /manus-storage/... เป็น absolute URL
+ * ป้องกันกรณี API ส่ง relative path แทน absolute URL
+ */
+export function toAbsoluteUrl(url: string | null | undefined): string | null {
+  if (!url) return null;
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  return `${ADMIN_ORIGIN}${url}`;
+}
 
 // ─── Types (matching Admin Panel schema) ─────────────────────────────────────
 
@@ -124,13 +137,35 @@ async function apiFetch<T>(
   return json.data as T;
 }
 
+// ─── Image URL patchers ───────────────────────────────────────────────────────
+
+function patchWork(w: ApiWork): ApiWork {
+  return { ...w, imageUrl: toAbsoluteUrl(w.imageUrl) };
+}
+
+function patchPost(p: ApiPost): ApiPost {
+  return { ...p, coverUrl: toAbsoluteUrl(p.coverUrl) };
+}
+
+function patchTeamMember(m: ApiTeamMember): ApiTeamMember {
+  return { ...m, imageUrl: toAbsoluteUrl(m.imageUrl) };
+}
+
+function patchCourse(c: ApiCourse): ApiCourse {
+  return { ...c, imageUrl: toAbsoluteUrl(c.imageUrl) };
+}
+
+function patchPartner(p: ApiPartner): ApiPartner {
+  return { ...p, logoUrl: toAbsoluteUrl(p.logoUrl) };
+}
+
 // ─── API functions ────────────────────────────────────────────────────────────
 
 /** Get all published works, sorted by order */
 export async function getWorks(): Promise<ApiWork[]> {
   try {
     const data = await apiFetch<ApiWork[]>("/works");
-    return data.sort((a, b) => a.order - b.order);
+    return data.sort((a, b) => a.order - b.order).map(patchWork);
   } catch {
     return [];
   }
@@ -139,7 +174,8 @@ export async function getWorks(): Promise<ApiWork[]> {
 /** Get a single work by slug */
 export async function getWorkBySlug(slug: string): Promise<ApiWork | null> {
   try {
-    return await apiFetch<ApiWork>(`/works/${encodeURIComponent(slug)}`);
+    const w = await apiFetch<ApiWork>(`/works/${encodeURIComponent(slug)}`);
+    return patchWork(w);
   } catch {
     return null;
   }
@@ -149,7 +185,9 @@ export async function getWorkBySlug(slug: string): Promise<ApiWork | null> {
 export async function getPosts(): Promise<ApiPost[]> {
   try {
     const data = await apiFetch<ApiPost[]>("/blog");
-    return data.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    return data
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .map(patchPost);
   } catch {
     return [];
   }
@@ -158,7 +196,8 @@ export async function getPosts(): Promise<ApiPost[]> {
 /** Get a single blog post by slug */
 export async function getPostBySlug(slug: string): Promise<ApiPost | null> {
   try {
-    return await apiFetch<ApiPost>(`/blog/${encodeURIComponent(slug)}`);
+    const p = await apiFetch<ApiPost>(`/blog/${encodeURIComponent(slug)}`);
+    return patchPost(p);
   } catch {
     return null;
   }
@@ -168,7 +207,7 @@ export async function getPostBySlug(slug: string): Promise<ApiPost | null> {
 export async function getTeamMembers(): Promise<ApiTeamMember[]> {
   try {
     const data = await apiFetch<ApiTeamMember[]>("/team");
-    return data.sort((a, b) => a.order - b.order);
+    return data.sort((a, b) => a.order - b.order).map(patchTeamMember);
   } catch {
     return [];
   }
@@ -198,7 +237,7 @@ export async function getTestimonials(): Promise<ApiTestimonial[]> {
 export async function getCourses(): Promise<ApiCourse[]> {
   try {
     const data = await apiFetch<ApiCourse[]>("/courses");
-    return data.sort((a, b) => a.order - b.order);
+    return data.sort((a, b) => a.order - b.order).map(patchCourse);
   } catch {
     return [];
   }
@@ -219,7 +258,7 @@ export async function getCourseBySlug(slug: string): Promise<ApiCourse | null> {
 export async function getPartners(): Promise<ApiPartner[]> {
   try {
     const data = await apiFetch<ApiPartner[]>("/partners");
-    return data.sort((a, b) => a.order - b.order);
+    return data.sort((a, b) => a.order - b.order).map(patchPartner);
   } catch {
     return [];
   }

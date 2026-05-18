@@ -49,6 +49,15 @@ const STATIC_PARTNERS: Item[] = [
   { src: "/partners/38.png", name: "MADAM JEWELRY" },
 ];
 
+const ADMIN_BASE_URL = "https://neoadmin-ivhumdtn.manus.space";
+
+/** แปลง relative /manus-storage/... เป็น absolute URL */
+function toAbsoluteUrl(url: string | null | undefined): string | null {
+  if (!url) return null;
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  return `${ADMIN_BASE_URL}${url}`;
+}
+
 /** ---------- คอลัมน์เลื่อนขึ้น/ลงแบบ marquee ---------- */
 function Column({
   items,
@@ -99,25 +108,27 @@ export default function Partners({
    * 2. ถ้า API มีข้อมูล ให้ override logoUrl สำหรับ partner ที่ชื่อตรงกัน (case-insensitive)
    * 3. ถ้า API มี partner ใหม่ที่ไม่มีใน static ให้เพิ่มต่อท้าย (พร้อม logoUrl)
    * ผลลัพธ์: แสดงโลโก้ครบเสมอ ไม่ขาดหาย
+   * toAbsoluteUrl: แปลง relative /manus-storage/... → absolute https://neoadmin-ivhumdtn.manus.space/...
    */
   const allItems: Item[] = (() => {
     if (!apiPartners || apiPartners.length === 0) return STATIC_PARTNERS;
 
-    // สร้าง map ชื่อ → logoUrl จาก API (เฉพาะที่มี logoUrl)
+    // สร้าง map ชื่อ → logoUrl จาก API (เฉพาะที่มี logoUrl) แปลงเป็น absolute URL
     const apiLogoMap = new Map<string, string>();
     const apiNewItems: Item[] = [];
 
     for (const p of apiPartners) {
       const key = p.name.trim().toLowerCase();
-      if (p.logoUrl) {
-        apiLogoMap.set(key, p.logoUrl);
+      const absLogoUrl = toAbsoluteUrl(p.logoUrl);
+      if (absLogoUrl) {
+        apiLogoMap.set(key, absLogoUrl);
       }
       // ตรวจว่ามีใน static หรือไม่
       const inStatic = STATIC_PARTNERS.some(
         (s) => s.name.toLowerCase() === key
       );
-      if (!inStatic && p.logoUrl) {
-        apiNewItems.push({ src: p.logoUrl, name: p.name });
+      if (!inStatic && absLogoUrl) {
+        apiNewItems.push({ src: absLogoUrl, name: p.name });
       }
     }
 
