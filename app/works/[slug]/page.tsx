@@ -1,22 +1,34 @@
 // app/works/[slug]/page.tsx
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { works } from "@/data/works";
+import { getWorks, getWorkBySlug } from "@/lib/api";
 
-export function generateStaticParams() {
+export const revalidate = 60;
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  const works = await getWorks();
   return works.map((w) => ({ slug: w.slug }));
 }
-export const dynamicParams = false;
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const w = works.find((x) => x.slug === params.slug);
+  const w = await getWorkBySlug(params.slug);
   if (!w) return {};
-  return { title: `${w.title} | NEO SPARK`, description: w.summary, openGraph: { images: [w.cover || "/og.jpg"] } };
+  return {
+    title: `${w.title} | NEO SPARK`,
+    description: w.description,
+    openGraph: { images: [w.imageUrl || "/og.jpg"] },
+  };
 }
 
-export default function Page({ params }: { params: { slug: string } }) {
-  const w = works.find((x) => x.slug === params.slug);
+export default async function Page({ params }: { params: { slug: string } }) {
+  const w = await getWorkBySlug(params.slug);
   if (!w) return notFound();
+
+  // Parse description as content paragraphs if it contains newlines
+  const contentParagraphs = w.description
+    ? w.description.split("\n").filter((p) => p.trim())
+    : [];
 
   return (
     <article className="container-xl py-10">
@@ -24,26 +36,21 @@ export default function Page({ params }: { params: { slug: string } }) {
       <div className="mt-2 text-white/60">{w.category}</div>
 
       <div className="relative mt-6 aspect-[16/9] overflow-hidden rounded-2xl border border-white/10">
-        <Image src={w.cover || "/og.jpg"} alt={w.title} fill className="object-cover" />
+        <Image
+          src={w.imageUrl || "/og.jpg"}
+          alt={w.title}
+          fill
+          className="object-cover"
+        />
       </div>
 
-      {w.content && (
+      {contentParagraphs.length > 0 && (
         <div className="prose prose-invert mt-8 max-w-3xl">
-          {w.content.map((p, i) => (
+          {contentParagraphs.map((p, i) => (
             <p key={i}>{p}</p>
           ))}
         </div>
       )}
-
-      {w.gallery?.length ? (
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {w.gallery.map((g, i) => (
-            <div key={i} className="relative aspect-[16/10] overflow-hidden rounded-xl border border-white/10">
-              <Image src={g} alt={`${w.title} ${i + 1}`} fill className="object-cover" />
-            </div>
-          ))}
-        </div>
-      ) : null}
     </article>
   );
 }

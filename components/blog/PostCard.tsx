@@ -1,7 +1,8 @@
 // /components/blog/PostCard.tsx
 import Link from "next/link";
-import Image from "next/image";
-import type { Cat } from "@/data/posts";
+
+// Cat type — must match categories in blog/page.tsx
+export type Cat = "Marketing" | "Design" | "Web" | "Video" | "Ads" | "Event";
 
 export function PostCard({
   slug,

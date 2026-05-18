@@ -1,8 +1,9 @@
 // app/blog/page.tsx
 import Link from "next/link";
-import { posts as allPosts } from "@/data/posts";
+import { getPosts, parseTags } from "@/lib/api";
 import { PostCard } from "@/components/blog/PostCard";
 import { buildMeta, jsonLd, SITE } from "../lib/seo";
+import type { Cat } from "@/components/blog/PostCard";
 
 export const metadata = buildMeta({
   title: "บทความ | NEO SPARK",
@@ -11,15 +12,28 @@ export const metadata = buildMeta({
   image: "/og/og-blog.jpg",
 });
 
+export const revalidate = 60;
+
 const categories = ["ทั้งหมด", "Marketing", "Design", "Web", "Video", "Ads", "Event"] as const;
-type Cat = (typeof categories)[number];
+type CatFilter = (typeof categories)[number];
 
-const pickActive = (c?: string): Cat => (c && (categories as readonly string[]).includes(c) ? (c as Cat) : "ทั้งหมด");
-const filterPosts = (cat: Cat) => (cat === "ทั้งหมด" ? allPosts : allPosts.filter((p) => p.category === cat));
+const pickActive = (c?: string): CatFilter =>
+  c && (categories as readonly string[]).includes(c) ? (c as CatFilter) : "ทั้งหมด";
 
-export default function Page({ searchParams }: { searchParams?: { cat?: string } }) {
+export default async function Page({ searchParams }: { searchParams?: { cat?: string } }) {
   const active = pickActive(searchParams?.cat);
-  const posts = filterPosts(active);
+  const allPosts = await getPosts();
+
+  // Derive category from first tag for filtering
+  const postsWithCat = allPosts.map((p) => ({
+    ...p,
+    derivedCategory: (parseTags(p.tags)[0] ?? "Marketing") as Cat,
+  }));
+
+  const posts =
+    active === "ทั้งหมด"
+      ? postsWithCat
+      : postsWithCat.filter((p) => p.derivedCategory === active);
 
   const breadcrumb = jsonLd.breadcrumb([
     { name: "Home", item: `${SITE.url}/` },
@@ -34,7 +48,9 @@ export default function Page({ searchParams }: { searchParams?: { cat?: string }
 
       <header className="mb-8">
         <h1 className="text-3xl font-bold">บทความ</h1>
-        <p className="mt-2 text-white/70">อัพเดตกลยุทธ์การตลาดออนไลน์ การออกแบบ เว็บไซต์ วิดีโอ โฆษณา และงานอีเวนต์—คัดสรรเพื่อแบรนด์ไทย</p>
+        <p className="mt-2 text-white/70">
+          อัพเดตกลยุทธ์การตลาดออนไลน์ การออกแบบ เว็บไซต์ วิดีโอ โฆษณา และงานอีเวนต์—คัดสรรเพื่อแบรนด์ไทย
+        </p>
       </header>
 
       <div className="mb-8 flex flex-wrap gap-2">
@@ -46,7 +62,9 @@ export default function Page({ searchParams }: { searchParams?: { cat?: string }
               key={c}
               href={href}
               className={`rounded-full border px-4 py-2 text-sm transition ${
-                isActive ? "border-neo-violet bg-neo-violet/20 text-white" : "border-white/10 bg-white/5 hover:bg-white/10 text-white/80"
+                isActive
+                  ? "border-neo-violet bg-neo-violet/20 text-white"
+                  : "border-white/10 bg-white/5 hover:bg-white/10 text-white/80"
               }`}
             >
               {c}
@@ -56,9 +74,23 @@ export default function Page({ searchParams }: { searchParams?: { cat?: string }
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {posts.map((p) => (
-          <PostCard key={p.slug} slug={p.slug} title={p.title} excerpt={p.excerpt} cover={p.cover} date={p.date} category={p.category} />
-        ))}
+        {posts.length === 0 ? (
+          <div className="col-span-full py-16 text-center text-white/50">
+            ยังไม่มีบทความในหมวดนี้
+          </div>
+        ) : (
+          posts.map((p) => (
+            <PostCard
+              key={p.slug}
+              slug={p.slug}
+              title={p.title}
+              excerpt={p.content?.slice(0, 120) ?? ""}
+              cover={p.coverUrl ?? ""}
+              date={p.createdAt}
+              category={p.derivedCategory}
+            />
+          ))
+        )}
       </div>
     </div>
   );

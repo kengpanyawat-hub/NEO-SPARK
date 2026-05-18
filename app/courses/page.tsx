@@ -1,10 +1,13 @@
 // app/courses/page.tsx
-import { courses } from "@/data/courses";
+import { getCourses, slugify } from "@/lib/api";
 import { CourseCard } from "@/components/cards/CourseCard";
 
 export const metadata = { title: "คอร์สออนไลน์ | NEO SPARK" };
+export const revalidate = 60;
 
-export default function Page() {
+export default async function Page() {
+  const courses = await getCourses();
+
   return (
     <div className="container-xl py-12">
       <header className="mb-8">
@@ -14,7 +17,14 @@ export default function Page() {
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {courses.map((c) => (
-          <CourseCard key={c.slug} slug={c.slug} title={c.title} price={c.price} cover={c.cover} summary={c.summary} />
+          <CourseCard
+            key={c.id}
+            slug={slugify(c.title)}
+            title={c.title}
+            price={c.price ? Number(c.price) : 0}
+            cover={c.imageUrl ?? "/og.jpg"}
+            summary={c.description ?? ""}
+          />
         ))}
       </div>
     </div>

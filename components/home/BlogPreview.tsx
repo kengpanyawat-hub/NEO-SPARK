@@ -1,10 +1,7 @@
 // components/home/BlogPreview.tsx
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { posts } from "@/data/posts";
+import { getPosts, parseTags } from "@/lib/api";
 
 /**
  * บล็อก "บทความล่าสุด" (Blog Preview)
@@ -65,14 +62,34 @@ function formatTags(tags: string[]) {
   return tags.length ? tags.join(" / ") : "—";
 }
 
-export default function BlogPreview() {
-  // 1) ทำความสะอาดข้อมูลทุกชิ้นก่อน
-  const cleaned = (posts as RawPost[]).map(normalize);
+export default async function BlogPreview() {
+  const allPosts = await getPosts();
+  const latest = allPosts
+    .sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt))
+    .slice(0, LIMIT)
+    .map((p) => ({
+      slug: p.slug,
+      title: p.title,
+      excerpt: p.content?.slice(0, 120) ?? "",
+      cover: p.coverUrl || PLACEHOLDER,
+      date: p.createdAt,
+      tags: parseTags(p.tags),
+    }));
 
-  // 2) เรียงตามวันที่ (ใหม่ → เก่า) แล้วตัดจำนวน
-  const latest = cleaned
-    .sort((a, b) => +new Date(b.date) - +new Date(a.date))
-    .slice(0, LIMIT);
+  if (latest.length === 0) {
+    return (
+      <section id="blog" className="container-xl py-16 sm:py-20">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h2 className="text-3xl sm:text-4xl font-bold">บทความ / อินไซต์ล่าสุด</h2>
+            <p className="mt-2 text-white/70">Tips • Case • SEO • UX • Ads • Dev ที่คัดแล้วว่าใช้ได้จริง</p>
+          </div>
+          <Link href="/blog" className="btn-ghost">อ่านทั้งหมด</Link>
+        </div>
+        <div className="mt-8 text-center text-white/50 py-12">กำลังเตรียมบทความ — ติดตามได้เร็ว··· นี้</div>
+      </section>
+    );
+  }
 
   return (
     <section id="blog" className="container-xl py-16 sm:py-20">
@@ -88,20 +105,10 @@ export default function BlogPreview() {
         </Link>
       </div>
 
-      <motion.ul
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, amount: 0.2 }}
-        variants={{
-          hidden: { opacity: 0 },
-          show: { opacity: 1, transition: { staggerChildren: 0.06 } },
-        }}
-        className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
-      >
+      <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {latest.map((p) => (
-          <motion.li
+          <li
             key={p.slug}
-            variants={{ hidden: { y: 16, opacity: 0 }, show: { y: 0, opacity: 1 } }}
             className="group overflow-hidden rounded-2xl border border-white/10 bg-white/[.03] transition hover:bg-white/[.06]"
           >
             <Link href={`/blog/${p.slug}`} className="block">
@@ -120,16 +127,15 @@ export default function BlogPreview() {
                   <time dateTime={p.date}>
                     {new Date(p.date).toLocaleDateString("th-TH")}
                   </time>
-                  <span>•</span>
-                  <span>{formatTags(p.tags)}</span>
+                  {p.tags.length > 0 && (<><span>•</span><span>{p.tags.join(" / ")}</span></>)}
                 </div>
                 <h3 className="mt-2 line-clamp-2 text-lg font-semibold">{p.title}</h3>
                 <p className="mt-1 line-clamp-2 text-sm text-white/70">{p.excerpt}</p>
               </div>
             </Link>
-          </motion.li>
+          </li>
         ))}
-      </motion.ul>
+      </ul>
     </section>
   );
 }

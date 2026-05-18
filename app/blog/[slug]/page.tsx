@@ -1,19 +1,9 @@
 // app/blog/[slug]/page.tsx
 import { notFound } from "next/navigation";
-import { posts } from "@/data/posts";
+import { getPosts, getPostBySlug, parseTags, formatDateTH } from "@/lib/api";
 
-/* ---------- Utils ---------- */
-const formatDateTH = (iso: string) => {
-  try {
-    return new Date(iso).toLocaleDateString("th-TH", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  } catch {
-    return iso;
-  }
-};
+export const revalidate = 60;
+export const dynamicParams = true;
 
 type Block =
   | { type: "paragraph"; text: string }
@@ -27,16 +17,12 @@ type Block =
   | { type: "divider" }
   | { type: "image"; src: string; alt?: string; caption?: string };
 
-/** แปลง content (string[]) เป็นบล็อกพร้อมเรนเดอร์
- *  รองรับรูปแบบ:
- *   - หัวข้อ:  ## H2 / ### H3
- *   - รายการ:  - item / 1. item
- *   - กล่อง:   TIP: ... / NOTE: ...
- *   - คำคม:    > ...
- *   - คั่น:     --- หรือ ***
- *   - รูปภาพ:  ![alt](/images/blog/slug/pic.jpg "คำอธิบาย")
+/**
+ * แปลง content (string หรือ string[]) เป็นบล็อกพร้อมเรนเดอร์
  */
-function toBlocks(lines: string[]): Block[] {
+function toBlocks(content: string | null): Block[] {
+  if (!content) return [];
+  const lines = content.split("\n");
   const blocks: Block[] = [];
   let i = 0;
 
@@ -55,8 +41,6 @@ function toBlocks(lines: string[]): Block[] {
   const isQuote = (s: string) => /^\s*>\s+/.test(s);
   const stripQuote = (s: string) => s.replace(/^\s*>\s+/, "");
   const isDivider = (s: string) => /^\s*(?:---|\*\*\*)\s*$/.test(s);
-
-  // รูปแบบภาพ: ![alt](src "caption")
   const imgRe = /^\s*!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)\s*$/;
 
   while (i < lines.length) {
@@ -64,7 +48,6 @@ function toBlocks(lines: string[]): Block[] {
     const raw = rawLine.trim();
     if (!raw) { i++; continue; }
 
-    // image
     const m = raw.match(imgRe);
     if (m) {
       const [, alt, src, caption] = m;
@@ -96,40 +79,34 @@ function toBlocks(lines: string[]): Block[] {
   return blocks;
 }
 
-/* ---------- Static params ---------- */
 export async function generateStaticParams() {
+  const posts = await getPosts();
   return posts.map((p) => ({ slug: p.slug }));
 }
 
-/* ---------- SEO ---------- */
 export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const p = posts.find((x) => x.slug === params.slug);
-  if (!p) return {};
-  const title = p.title;
-  const description = p.excerpt ?? p.takeaway?.join(" · ") ?? "";
-  const image = p.cover || "/og.jpg";
-  const url = `https://neo-spark.agency/blog/${p.slug}`;
-
+  const post = await getPostBySlug(params.slug);
+  if (!post) return {};
+  const url = `https://neo-spark.agency/blog/${post.slug}`;
   return {
-    title,
-    description,
+    title: `${post.title} | NEO SPARK`,
+    description: post.content?.slice(0, 160) ?? "",
     openGraph: {
-      title,
-      description,
+      title: post.title,
       url,
-      images: [{ url: image }],
+      images: [{ url: post.coverUrl || "/og.jpg" }],
       type: "article",
     },
     alternates: { canonical: url },
   };
 }
 
-/* ---------- Page ---------- */
-export default function BlogPostPage({ params }: { params: { slug: string } }) {
-  const post = posts.find((p) => p.slug === params.slug);
+export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+  const post = await getPostBySlug(params.slug);
   if (!post) return notFound();
 
-  const blocks = toBlocks(post.content ?? []);
+  const tags = parseTags(post.tags);
+  const blocks = toBlocks(post.content);
 
   return (
     <div className="relative">
@@ -137,28 +114,32 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
       <article className="mx-auto max-w-3xl py-10 px-5 sm:px-6 md:px-0 text-white">
         <header className="mb-8">
           <div className="flex items-center gap-2 text-xs text-white/60">
-            <span>{formatDateTH(post.date)}</span>
-            {post.tags?.length ? (
+            <span>{formatDateTH(post.createdAt)}</span>
+            {tags.length > 0 && (
               <>
                 <span>•</span>
                 <div className="flex flex-wrap gap-2">
-                  {post.tags.map((t) => (
-                    <span key={t} className="inline-flex items-center rounded-full bg-white/5 px-2.5 py-0.5 ring-1 ring-white/10 text-[11px]">
+                  {tags.map((t) => (
+                    <span
+                      key={t}
+                      className="inline-flex items-center rounded-full bg-white/5 px-2.5 py-0.5 ring-1 ring-white/10 text-[11px]"
+                    >
                       {t}
                     </span>
                   ))}
                 </div>
               </>
-            ) : null}
+            )}
           </div>
-          <h1 className="mt-2 text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">{post.title}</h1>
-          {post.excerpt && <p className="mt-3 text-white/70 leading-relaxed">{post.excerpt}</p>}
+          <h1 className="mt-2 text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
+            {post.title}
+          </h1>
         </header>
 
-        {post.cover && (
+        {post.coverUrl && (
           <div className="mb-8 overflow-hidden rounded-xl ring-1 ring-white/10">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={post.cover} alt={post.title} className="w-full h-auto object-cover" />
+            <img src={post.coverUrl} alt={post.title} className="w-full h-auto object-cover" />
           </div>
         )}
 
@@ -186,17 +167,25 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
               case "tip":
                 return (
                   <div key={idx} className="my-6 rounded-xl border border-purple-500/20 bg-purple-500/10 p-4">
-                    <p className="m-0 text-white/90"><span className="font-semibold text-purple-300">Tip: </span>{b.text}</p>
+                    <p className="m-0 text-white/90">
+                      <span className="font-semibold text-purple-300">Tip: </span>{b.text}
+                    </p>
                   </div>
                 );
               case "note":
                 return (
                   <div key={idx} className="my-6 rounded-xl border border-white/10 bg-white/5 p-4">
-                    <p className="m-0 text-white/80"><span className="font-semibold">Note: </span>{b.text}</p>
+                    <p className="m-0 text-white/80">
+                      <span className="font-semibold">Note: </span>{b.text}
+                    </p>
                   </div>
                 );
               case "quote":
-                return <blockquote key={idx} className="my-6 border-l-4 border-white/20 pl-4 text-white/70 italic">{b.text}</blockquote>;
+                return (
+                  <blockquote key={idx} className="my-6 border-l-4 border-white/20 pl-4 text-white/70 italic">
+                    {b.text}
+                  </blockquote>
+                );
               case "divider":
                 return <hr key={idx} className="my-8 border-white/10" />;
               case "image":
@@ -217,18 +206,9 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
           })}
         </div>
 
-        {post.takeaway?.length ? (
-          <section className="mt-10">
-            <h3 className="text-xl font-semibold mb-3 text-purple-300">สรุปนำไปใช้</h3>
-            <ul className="list-disc list-inside space-y-2 text-white/85">
-              {post.takeaway.map((t, i) => <li key={i} className="leading-7">{t}</li>)}
-            </ul>
-          </section>
-        ) : null}
-
         <footer className="mt-10 pt-6 border-t border-white/10 text-sm text-white/60">
-          <div>ผู้เขียน: {post.author ?? "NEO SPARK AGENCY"}</div>
-          <div className="mt-1">เผยแพร่: {formatDateTH(post.date)}</div>
+          <div>ผู้เขียน: NEO SPARK AGENCY</div>
+          <div className="mt-1">เผยแพร่: {formatDateTH(post.createdAt)}</div>
         </footer>
       </article>
     </div>

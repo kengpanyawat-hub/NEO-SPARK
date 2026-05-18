@@ -20,6 +20,7 @@ import Compare from "@/components/home/Compare";
 import SkewGallery from "@/components/gallery/SkewGallery";
 import ServiceCategories from "@/components/sections/ServiceCategories";
 import SmmShowcase from "@/components/SmmShowcase";
+import { getPartners } from "@/lib/api";
 
 import { buildMeta, jsonLd, SITE } from "./lib/seo";
 
@@ -28,14 +29,17 @@ export const metadata = buildMeta({
   description: "เอเจนซี่การตลาดออนไลน์ครบวงจร รับทำเว็บไซต์ กราฟิก โมชั่น วีดีโอ โฆษณา และอีเวนต์",
   canonical: "/",
   image: "/og/og-home.jpg",
-  noTemplate: true, // ✅ ใช้สตริงตรง ๆ กัน [object Object]
+  noTemplate: true,
 });
 
-export default function Home() {
+export const revalidate = 60;
+
+export default async function Home() {
   const org = jsonLd.organization();
   const breadcrumb = jsonLd.breadcrumb([{ name: "Home", item: `${SITE.url}/` }]);
 
   const works = Array.from({ length: 10 }).map(() => ({ src: "/graphics/g1.jpg" }));
+  const partners = await getPartners();
 
   return (
     <>
@@ -48,7 +52,7 @@ export default function Home() {
       <ServiceCategories />
       <SkewGallery id="work" title="Selected works" items={works} rows={3} cardWidth={560} cardHeight={315} gap={24} duration={26} skewDeg={4} className="mx-auto max-w-[1440px]" />
       <WhyUs />
-      <Partners />
+      <Partners apiPartners={partners} />
       <GraphicShowcase />
       <MicroFeatures />
       <HowWeHelp />
